@@ -1,0 +1,86 @@
+.tariff-screen {
+  min-height: 100vh;
+  background-color: #0b1220;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tariff-container {
+  width: 100%;
+  max-width: 390px;
+  min-height: 100vh;
+  padding: 24px 16px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Тексты */
+.tariff-title {
+  margin-top: 200px;
+  font-size: 20px;
+  color: #ffffff;
+  text-align: center;
+}
+
+.tariff-text {
+  margin-top: 48px;
+  font-size: 18px;
+  color: #ffffff;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.tariff-features {
+  margin-top: 102px;
+  padding: 0;
+  list-style: none;
+  text-align: center;
+  font-size: 16px;
+  color: #ffffff;
+  line-height: 1.6;
+}
+
+/* Карточка */
+.tariff-card {
+  margin-top: 129px;
+  height: 72px;
+  border: 1px solid #ffffff;
+  background-color: #111827;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  color: #e5e7eb;
+}
+
+/* Кнопка */
+.tariff-button {
+  margin-top: auto;
+  margin-bottom: 120px;
+  height: 48px;
+  border-radius: 12px;
+  background-color: #3b82f6;
+  color: #e5e7eb;
+  font-size: 18px;
+  border: none;
+  cursor: pointer;
+}
+
+.tariff-button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* Заглушка */
+.tariff-stub-title {
+  margin-top: 260px;
+  font-family: 'Inter', sans-serif;
+  font-size: 24px;
+  color: #9ca3af;
+  text-align: center;
+  line-height: 1.5;
+}

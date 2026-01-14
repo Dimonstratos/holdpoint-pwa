@@ -1,0 +1,125 @@
+/* Контейнер — mobile-first */
+.landing-screen {
+  width: 100%;
+  max-width: 390px;   /* телефон */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
+/* Заголовок */
+.landing-title {
+  margin-top: 40px;
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: #E5E7EB;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* Подзаголовок */
+.landing-subtitle {
+  margin-top: 48px;
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: #E5E7EB;
+  text-align: center;
+}
+
+/* Основной текст */
+.landing-text {
+  margin-top: 48px;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #E5E7EB;
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* Список преимуществ */
+.landing-features {
+  margin-top: 72px;
+  list-style-type: disc;
+  padding-left: 20px;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  color: #E5E7EB;
+  line-height: 1.5;
+}
+
+.landing-features li {
+  margin-bottom: 8px;
+}
+
+/* Кнопка */
+.landing-button {
+  margin-top: 72px;
+  width: 320px;
+  height: 48px;
+  background-color: #3B82F6;
+  color: #E5E7EB;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.landing-button:hover {
+  background-color: #2563EB;
+}
+
+/* Планшеты (ширина >= 600px) */
+@media (min-width: 600px) {
+  .landing-screen {
+    max-width: 600px;
+    padding: 0 32px;
+  }
+  .landing-title {
+    font-size: 36px;
+  }
+  .landing-subtitle {
+    font-size: 22px;
+  }
+  .landing-text,
+  .landing-features {
+    font-size: 18px;
+  }
+  .landing-button {
+    width: 360px;
+    height: 56px;
+    font-size: 18px;
+  }
+}
+
+/* Десктопы (ширина >= 900px) */
+@media (min-width: 900px) {
+  .landing-screen {
+    max-width: 800px;
+    padding: 0 64px;
+  }
+  .landing-title {
+    font-size: 40px;
+  }
+  .landing-subtitle {
+    font-size: 24px;
+  }
+  .landing-text,
+  .landing-features {
+    font-size: 20px;
+  }
+  .landing-button {
+    width: 400px;
+    height: 60px;
+    font-size: 20px;
+  }
+}

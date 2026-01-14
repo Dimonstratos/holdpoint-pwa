@@ -1,0 +1,19 @@
+/* Центрирование всего приложения */
+body {
+  display: flex;
+  justify-content: center; /* горизонтально */
+  align-items: flex-start; /* вертикально — можно center, если хотим полностью центрировать */
+  min-height: 100vh;
+  margin: 0;
+  background-color: #0B1220; /* общий фон */
+  font-family: 'Inter', sans-serif;
+}
+
+/* Контейнер с фиксированной шириной как макет Penpot */
+.app-container {
+  width: 390px;
+  min-height: 844px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
