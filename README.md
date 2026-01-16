@@ -1,73 +1,69 @@
-# React + TypeScript + Vite
+# HOLD•POINT
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Анонимная эмоциональная поддержка онлайн,
+когда вам тяжело и нужно выговориться.
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# 🧠 Что это?
 
-## React Compiler
+HOLD•POINT — это пространство для спокойного,
+человеческого диалога в сложные жизненные моменты.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Если вас бросили, предали, вы переживаете кризис,
+одиночество или просто не знаете, с кем поговорить —
+здесь можно остановиться и выдохнуть.
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+# Принципы проекта
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Анонимно
+- Без осуждения
+- Без морализаторства
+- Без «псевдотерапии»
+- Человеческий язык
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+# 🚫 Важно
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+HOLD•POINT не является медицинской,
+психологической или юридической помощью.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Сервис не заменяет специалистов,
+а лишь помогает снизить эмоциональное напряжение.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+
+# 🚀 Как начать?
+
+1. Перейдите на сайт
+2. Введите email
+3. Подтвердите вход кодом
+4. Начните разговор
+
+
+# 🔐 Конфиденциальность
+
+Мы не продаём данные.
+Мы не собираем лишнюю информацию.
+Мы уважаем личные границы.
+
+
+# 🛠 Технологии
+
+- React + Vite
+- TypeScript
+- OpenRouter (LLM)
+- Resend (email)
+- Supabase (хранение данных)
+- Vercel (деплой)
+
+
+# 🌱 Статус проекта
+
+Проект находится на стадии MVP.
+Мы собираем обратную связь и постепенно улучшаем опыт.
+
+
+# 📩 Контакт
+
+Если вы хотите помочь проекту или оставить отзыв —
+напишите: support@holdpoint.app
