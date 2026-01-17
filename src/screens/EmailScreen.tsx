@@ -5,47 +5,91 @@ import Disclaimer from '../components/Disclaimer';
 type EmailScreenProps = {
   onContinue: () => void;
   onOpenTerms: () => void;
-}
+};
 
 const EmailScreen: React.FC<EmailScreenProps> = ({ onContinue, onOpenTerms }) => {
   const [email, setEmail] = useState('');
+  const [code, setCode] = useState('');
   const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const sendMagicLink = () => {
+  const sendCode = async () => {
     if (!email.trim()) return;
-    // Здесь в реальном проекте можно вызвать API для отправки magic link
-    setSent(true);
-  }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const res = await fetch('/api/send-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!res.ok) throw new Error('Ошибка отправки');
+
+      setSent(true);
+    } catch {
+      setError('Не удалось отправить код');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ⚠️ MVP: принимаем любой код
+  const verifyCode = () => {
+    if (code.trim().length === 6) {
+      onContinue();
+    }
+  };
 
   return (
     <div className="email-screen">
-      <h1 className="email-title">Введите email</h1>
-      <p className="email-text">
-        Мы используем его только для входа<br/>
-        и защиты от спама
-      </p>
+      <h1 className="email-title">
+        {sent ? 'Введите код' : 'Введите email'}
+      </h1>
 
       {!sent ? (
         <>
           <input
-            type="email"
             className="email-input"
             placeholder="Email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={e => setEmail(e.target.value)}
           />
-          <button className="email-button" onClick={sendMagicLink}>
-            ПОЛУЧИТЬ ССЫЛКУ
+
+          <button
+            className="email-button"
+            onClick={sendCode}
+            disabled={loading}
+          >
+            {loading ? 'Отправка...' : 'Получить код'}
           </button>
         </>
       ) : (
-        <button className="email-button" onClick={onContinue}>
-          Продолжить
-        </button>
+        <>
+          <input
+            className="email-input"
+            placeholder="Код из письма"
+            value={code}
+            onChange={e => setCode(e.target.value)}
+          />
+
+          <button
+            className="email-button"
+            onClick={verifyCode}
+          >
+            Продолжить
+          </button>
+        </>
       )}
-      <Disclaimer onOpenTerms={onOpenTerms}/>
+
+      {error && <p style={{ color: '#ef4444' }}>{error}</p>}
+
+      <Disclaimer onOpenTerms={onOpenTerms} />
     </div>
-  )
-}
+  );
+};
 
 export default EmailScreen;
