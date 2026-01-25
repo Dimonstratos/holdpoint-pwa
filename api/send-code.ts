@@ -1,37 +1,52 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY!);
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-export default async function handler(
-  req: VercelRequest,
-  res: VercelResponse
-) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  const { email, code } = req.body;
-
-  if (!email || !code) {
-    return res.status(400).json({ error: 'Email or code missing' });
-  }
-
+export default async function handler(req: Request) {
   try {
+    if (req.method !== 'POST') {
+      return new Response('Method Not Allowed', { status: 405 });
+    }
+
+    const body = await req.json();
+    const email = body?.email;
+
+    if (!email || typeof email !== 'string') {
+      return new Response(
+        JSON.stringify({ error: 'Email is required' }),
+        { status: 400 }
+      );
+    }
+
+    // генерируем код
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // отправляем письмо
     await resend.emails.send({
-      from: 'HoldPoint <onboarding@resend.dev>',
+      from: 'HoldPoint <onboarding@resend.dev>', // тестовый домен
       to: email,
       subject: 'Код подтверждения HoldPoint',
       html: `
-        <h2>Ваш код подтверждения</h2>
-        <p style="font-size: 20px;"><strong>${code}</strong></p>
-        <p>Если это были не вы — просто проигнорируйте письмо.</p>
+        <div style="font-family: Arial, sans-serif;">
+          <h2>Ваш код подтверждения</h2>
+          <p style="font-size: 24px; letter-spacing: 2px;">
+            <b>${code}</b>
+          </p>
+          <p>Если вы не запрашивали код — просто проигнорируйте письмо.</p>
+        </div>
       `,
     });
 
-    return res.status(200).json({ success: true });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: 'Email send failed' });
+    return new Response(
+      JSON.stringify({ success: true }),
+      { status: 200 }
+    );
+  } catch (err) {
+    console.error('SEND CODE ERROR:', err);
+
+    return new Response(
+      JSON.stringify({ error: 'Internal Server Error' }),
+      { status: 500 }
+    );
   }
 }
