@@ -95,9 +95,11 @@ const EmailScreen: React.FC<EmailScreenProps> = ({
           />
 
           <button
-            className="email-button"
-            onClick={verifyCode}
-          >
+  type="button"
+  className="email-button"
+  onClick={sendCode}
+  disabled={loading}
+>
             Продолжить
           </button>
         </>
