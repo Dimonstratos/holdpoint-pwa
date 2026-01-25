@@ -77,6 +77,7 @@ const EmailScreen: React.FC<EmailScreenProps> = ({
           />
 
           <button
+          type="button"
             className="email-button"
             onClick={sendCode}
             disabled={loading}

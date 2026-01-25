@@ -1,5 +1,8 @@
 import { Resend } from 'resend';
 
+const sendCode = async () => {
+  alert('SEND CODE CLICK');
+}
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export default async function handler(req: Request) {
