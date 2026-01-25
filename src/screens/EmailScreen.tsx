@@ -7,41 +7,56 @@ type EmailScreenProps = {
   onOpenTerms: () => void;
 };
 
-const EmailScreen: React.FC<EmailScreenProps> = ({ onContinue, onOpenTerms }) => {
+const EmailScreen: React.FC<EmailScreenProps> = ({
+  onContinue,
+  onOpenTerms,
+}) => {
   const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // 📩 Отправка кода на email
   const sendCode = async () => {
-    if (!email.trim()) return;
+    if (!email.trim()) {
+      setError('Введите email');
+      return;
+    }
 
     setLoading(true);
     setError('');
 
     try {
-      const res = await fetch('/api/send-code', {
+      const response = await fetch('/api/send-code', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ email }),
       });
 
-      if (!res.ok) throw new Error('Ошибка отправки');
+      if (!response.ok) {
+        throw new Error('Ошибка отправки письма');
+      }
 
       setSent(true);
-    } catch {
-      setError('Не удалось отправить код');
+    } catch (err) {
+      console.error(err);
+      setError('Не удалось отправить код. Попробуйте позже.');
     } finally {
       setLoading(false);
     }
   };
 
-  // ⚠️ MVP: принимаем любой код
+  // 🔐 MVP-проверка кода (пока принимаем любой 6-значный)
   const verifyCode = () => {
-    if (code.trim().length === 6) {
-      onContinue();
+    if (code.trim().length !== 6) {
+      setError('Введите 6-значный код');
+      return;
     }
+
+    onContinue();
   };
 
   return (
@@ -53,10 +68,12 @@ const EmailScreen: React.FC<EmailScreenProps> = ({ onContinue, onOpenTerms }) =>
       {!sent ? (
         <>
           <input
+            type="email"
             className="email-input"
             placeholder="Email"
             value={email}
             onChange={e => setEmail(e.target.value)}
+            disabled={loading}
           />
 
           <button
@@ -74,6 +91,7 @@ const EmailScreen: React.FC<EmailScreenProps> = ({ onContinue, onOpenTerms }) =>
             placeholder="Код из письма"
             value={code}
             onChange={e => setCode(e.target.value)}
+            maxLength={6}
           />
 
           <button
@@ -85,7 +103,11 @@ const EmailScreen: React.FC<EmailScreenProps> = ({ onContinue, onOpenTerms }) =>
         </>
       )}
 
-      {error && <p style={{ color: '#ef4444' }}>{error}</p>}
+      {error && (
+        <p style={{ color: '#ef4444', marginTop: '16px' }}>
+          {error}
+        </p>
+      )}
 
       <Disclaimer onOpenTerms={onOpenTerms} />
     </div>
