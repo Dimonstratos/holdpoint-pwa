@@ -7,57 +7,62 @@ type EmailScreenProps = {
   onOpenTerms: () => void;
 };
 
-const EmailScreen: React.FC<EmailScreenProps> = ({
-  onContinue,
-  onOpenTerms,
-}) => {
+const EmailScreen: React.FC<EmailScreenProps> = ({ onContinue, onOpenTerms }) => {
   const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
+  const [serverCode, setServerCode] = useState('');
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // 📩 Отправка кода на email
   const sendCode = async () => {
-    if (!email.trim()) {
-      setError('Введите email');
-      return;
-    }
+    if (!email.trim()) return;
 
     setLoading(true);
     setError('');
 
     try {
-      const response = await fetch('/api/send-code', {
+      const res = await fetch('/api/send-code', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       });
 
-      if (!response.ok) {
-        throw new Error('Ошибка отправки письма');
-      }
+      const data = await res.json();
+
+      if (!res.ok) throw new Error();
+
+      // ⚠️ MVP: временно сохраняем код на фронте
+      setServerCode(data.code);
 
       setSent(true);
-    } catch (err) {
-      console.error(err);
-      setError('Не удалось отправить код. Попробуйте позже.');
+    } catch {
+      setError('Не удалось отправить код');
     } finally {
       setLoading(false);
     }
   };
 
-  // 🔐 MVP-проверка кода (пока принимаем любой 6-значный)
-  const verifyCode = () => {
-    if (code.trim().length !== 6) {
-      setError('Введите 6-значный код');
-      return;
-    }
+  const verifyCode = async () => {
+  setLoading(true);
+  setError('');
+
+  try {
+    const res = await fetch('/api/verify-code', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, code }),
+    });
+
+    if (!res.ok) throw new Error();
 
     onContinue();
-  };
+  } catch {
+    setError('Неверный или устаревший код');
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="email-screen">
@@ -68,16 +73,13 @@ const EmailScreen: React.FC<EmailScreenProps> = ({
       {!sent ? (
         <>
           <input
-            type="email"
             className="email-input"
             placeholder="Email"
             value={email}
             onChange={e => setEmail(e.target.value)}
-            disabled={loading}
           />
 
           <button
-          type="button"
             className="email-button"
             onClick={sendCode}
             disabled={loading}
@@ -92,25 +94,18 @@ const EmailScreen: React.FC<EmailScreenProps> = ({
             placeholder="Код из письма"
             value={code}
             onChange={e => setCode(e.target.value)}
-            maxLength={6}
           />
 
           <button
-  type="button"
-  className="email-button"
-  onClick={sendCode}
-  disabled={loading}
->
+            className="email-button"
+            onClick={verifyCode}
+          >
             Продолжить
           </button>
         </>
       )}
 
-      {error && (
-        <p style={{ color: '#ef4444', marginTop: '16px' }}>
-          {error}
-        </p>
-      )}
+      {error && <p style={{ color: '#ef4444' }}>{error}</p>}
 
       <Disclaimer onOpenTerms={onOpenTerms} />
     </div>
