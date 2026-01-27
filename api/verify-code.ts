@@ -2,37 +2,36 @@ import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
   process.env.SUPABASE_URL!,
-  process.env.SUPABASE_ANON_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-export default async function handler(req: Request) {
+export default async function handler(req: any, res: any) {
   if (req.method !== 'POST') {
-    return new Response('Method not allowed', { status: 405 });
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { email, code } = await req.json();
+  const { email, code } = req.body;
 
   if (!email || !code) {
-    return new Response('Invalid data', { status: 400 });
+    return res.status(400).json({ error: 'Email and code required' });
   }
 
-  const { data, error } = await supabase
-    .from('auth_codes')
+  const { data } = await supabase
+    .from('email_codes')
     .select('*')
     .eq('email', email)
     .eq('code', code)
-    .gt('expires_at', new Date().toISOString())
     .single();
 
-  if (error || !data) {
-    return new Response(JSON.stringify({ success: false }), { status: 401 });
+  if (!data) {
+    return res.status(401).json({ error: 'Invalid code' });
   }
 
-  // можно удалить код после использования
+  // удаляем код после успеха
   await supabase
-    .from('auth_codes')
+    .from('email_codes')
     .delete()
-    .eq('id', data.id);
+    .eq('email', email);
 
-  return new Response(JSON.stringify({ success: true }), { status: 200 });
+  return res.status(200).json({ ok: true });
 }

@@ -44,6 +44,11 @@ const EmailScreen: React.FC<EmailScreenProps> = ({ onContinue, onOpenTerms }) =>
   };
 
   const verifyCode = async () => {
+  if (code.trim().length !== 6) {
+    setError('Введите 6-значный код');
+    return;
+  }
+
   setLoading(true);
   setError('');
 
@@ -54,11 +59,13 @@ const EmailScreen: React.FC<EmailScreenProps> = ({ onContinue, onOpenTerms }) =>
       body: JSON.stringify({ email, code }),
     });
 
-    if (!res.ok) throw new Error();
+    if (!res.ok) {
+      throw new Error();
+    }
 
     onContinue();
   } catch {
-    setError('Неверный или устаревший код');
+    setError('Неверный код');
   } finally {
     setLoading(false);
   }
@@ -82,7 +89,7 @@ const EmailScreen: React.FC<EmailScreenProps> = ({ onContinue, onOpenTerms }) =>
           <button
             className="email-button"
             onClick={sendCode}
-            disabled={loading}
+            disabled={loading || sent}
           >
             {loading ? 'Отправка...' : 'Получить код'}
           </button>
