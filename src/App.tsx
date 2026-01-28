@@ -20,7 +20,12 @@ type Screen =
   | 'terms';
 
 const App: React.FC = () => {
-  const [screen, setScreen] = useState<Screen>('landing');
+  const isLoggedIn = Boolean(localStorage.getItem('holdpoint_user'));
+
+  const [screen, setScreen] = useState<Screen>(
+    isLoggedIn ? 'chat-free' : 'landing'
+  );
+
   const [prevScreen, setPrevScreen] = useState<Screen | null>(null);
 
   const openTerms = () => {

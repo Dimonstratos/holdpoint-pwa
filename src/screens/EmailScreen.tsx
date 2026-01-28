@@ -10,13 +10,16 @@ type EmailScreenProps = {
 const EmailScreen: React.FC<EmailScreenProps> = ({ onContinue, onOpenTerms }) => {
   const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
-  const [serverCode, setServerCode] = useState('');
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // 🔹 ШАГ 1. Отправка кода
   const sendCode = async () => {
-    if (!email.trim()) return;
+    if (!email.trim()) {
+      setError('Введите email');
+      return;
+    }
 
     setLoading(true);
     setError('');
@@ -28,48 +31,57 @@ const EmailScreen: React.FC<EmailScreenProps> = ({ onContinue, onOpenTerms }) =>
         body: JSON.stringify({ email }),
       });
 
-      const data = await res.json();
-
-      if (!res.ok) throw new Error();
-
-      // ⚠️ MVP: временно сохраняем код на фронте
-      setServerCode(data.code);
+      if (!res.ok) {
+        throw new Error();
+      }
 
       setSent(true);
     } catch {
-      setError('Не удалось отправить код');
+      setError('Не удалось отправить код. Попробуйте позже.');
     } finally {
       setLoading(false);
     }
   };
 
+  // 🔹 ШАГ 2. Проверка кода + автологин
   const verifyCode = async () => {
-  if (code.trim().length !== 6) {
-    setError('Введите 6-значный код');
-    return;
-  }
-
-  setLoading(true);
-  setError('');
-
-  try {
-    const res = await fetch('/api/verify-code', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, code }),
-    });
-
-    if (!res.ok) {
-      throw new Error();
+    if (code.trim().length !== 6) {
+      setError('Введите 6-значный код');
+      return;
     }
 
-    onContinue();
-  } catch {
-    setError('Неверный код');
-  } finally {
-    setLoading(false);
-  }
-};
+    setLoading(true);
+    setError('');
+
+    try {
+      const res = await fetch('/api/verify-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, code }),
+      });
+
+      if (!res.ok) {
+        throw new Error();
+      }
+
+      const data = await res.json();
+
+      // 🔐 СОХРАНЯЕМ АВТО-ЛОГИН
+      localStorage.setItem(
+        'holdpoint_user',
+        JSON.stringify({
+          userId: data.userId,
+          email: data.email,
+        })
+      );
+
+      onContinue();
+    } catch {
+      setError('Неверный код');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="email-screen">
@@ -81,17 +93,19 @@ const EmailScreen: React.FC<EmailScreenProps> = ({ onContinue, onOpenTerms }) =>
         <>
           <input
             className="email-input"
+            type="email"
             placeholder="Email"
             value={email}
             onChange={e => setEmail(e.target.value)}
+            disabled={loading}
           />
 
           <button
             className="email-button"
             onClick={sendCode}
-            disabled={loading || sent}
+            disabled={loading}
           >
-            {loading ? 'Отправка...' : 'Получить код'}
+            {loading ? 'Отправка…' : 'Получить код'}
           </button>
         </>
       ) : (
@@ -101,18 +115,20 @@ const EmailScreen: React.FC<EmailScreenProps> = ({ onContinue, onOpenTerms }) =>
             placeholder="Код из письма"
             value={code}
             onChange={e => setCode(e.target.value)}
+            disabled={loading}
           />
 
           <button
             className="email-button"
             onClick={verifyCode}
+            disabled={loading}
           >
-            Продолжить
+            {loading ? 'Проверка…' : 'Продолжить'}
           </button>
         </>
       )}
 
-      {error && <p style={{ color: '#ef4444' }}>{error}</p>}
+      {error && <p style={{ color: '#ef4444', marginTop: 16 }}>{error}</p>}
 
       <Disclaimer onOpenTerms={onOpenTerms} />
     </div>

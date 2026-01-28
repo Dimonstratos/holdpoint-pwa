@@ -1,5 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
+import { randomUUID } from 'crypto';
 
+const userId = randomUUID();
 const supabase = createClient(
   process.env.SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -33,5 +35,8 @@ export default async function handler(req: any, res: any) {
     .delete()
     .eq('email', email);
 
-  return res.status(200).json({ ok: true });
+  return res.status(200).json({ ok: true,
+    userId,
+    email
+   });
 }
