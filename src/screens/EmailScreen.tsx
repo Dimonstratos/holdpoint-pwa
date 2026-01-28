@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './EmailScreen.css';
 import Disclaimer from '../components/Disclaimer';
 
@@ -18,6 +18,12 @@ const EmailScreen: React.FC<EmailScreenProps> = ({ onContinue, onOpenTerms }) =>
   const sendCode = async () => {
     if (!email.trim()) {
       setError('Введите email');
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError{'Введите корректный email'};
       return;
     }
 
@@ -69,10 +75,7 @@ const EmailScreen: React.FC<EmailScreenProps> = ({ onContinue, onOpenTerms }) =>
       // 🔐 СОХРАНЯЕМ АВТО-ЛОГИН
       localStorage.setItem(
         'holdpoint_user',
-        JSON.stringify({
-          userId: data.userId,
-          email: data.email,
-        })
+        JSON.stringify({ email })
       );
 
       onContinue();

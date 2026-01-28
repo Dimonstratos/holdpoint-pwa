@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Landing from './screens/Landing';
 import EmailScreen from './screens/EmailScreen';
@@ -27,6 +27,13 @@ const App: React.FC = () => {
   );
 
   const [prevScreen, setPrevScreen] = useState<Screen | null>(null);
+
+  useEffect(() => {
+    const user = localStorage.getItem('holdpoint_user');
+    if (user) {
+      setScreen('chat-free');
+    }
+  }, []);
 
   const openTerms = () => {
     setPrevScreen(screen);
