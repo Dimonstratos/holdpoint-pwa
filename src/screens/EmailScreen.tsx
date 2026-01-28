@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './EmailScreen.css';
 import Disclaimer from '../components/Disclaimer';
 
@@ -14,7 +14,6 @@ const EmailScreen: React.FC<EmailScreenProps> = ({ onContinue, onOpenTerms }) =>
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // 🔹 ШАГ 1. Отправка кода
   const sendCode = async () => {
     if (!email.trim()) {
       setError('Введите email');
@@ -23,7 +22,7 @@ const EmailScreen: React.FC<EmailScreenProps> = ({ onContinue, onOpenTerms }) =>
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      setError{'Введите корректный email'};
+      setError('Введите корректный email');
       return;
     }
 
@@ -38,18 +37,17 @@ const EmailScreen: React.FC<EmailScreenProps> = ({ onContinue, onOpenTerms }) =>
       });
 
       if (!res.ok) {
-        throw new Error();
+        throw new Error('Ошибка отправки');
       }
 
       setSent(true);
-    } catch {
-      setError('Не удалось отправить код. Попробуйте позже.');
+    } catch (e) {
+      setError('Не удалось отправить код');
     } finally {
       setLoading(false);
     }
   };
 
-  // 🔹 ШАГ 2. Проверка кода + автологин
   const verifyCode = async () => {
     if (code.trim().length !== 6) {
       setError('Введите 6-значный код');
@@ -67,12 +65,10 @@ const EmailScreen: React.FC<EmailScreenProps> = ({ onContinue, onOpenTerms }) =>
       });
 
       if (!res.ok) {
-        throw new Error();
+        throw new Error('Неверный код');
       }
 
-      const data = await res.json();
-
-      // 🔐 СОХРАНЯЕМ АВТО-ЛОГИН
+      // автологин
       localStorage.setItem(
         'holdpoint_user',
         JSON.stringify({ email })
@@ -96,11 +92,9 @@ const EmailScreen: React.FC<EmailScreenProps> = ({ onContinue, onOpenTerms }) =>
         <>
           <input
             className="email-input"
-            type="email"
             placeholder="Email"
             value={email}
             onChange={e => setEmail(e.target.value)}
-            disabled={loading}
           />
 
           <button
@@ -108,7 +102,7 @@ const EmailScreen: React.FC<EmailScreenProps> = ({ onContinue, onOpenTerms }) =>
             onClick={sendCode}
             disabled={loading}
           >
-            {loading ? 'Отправка…' : 'Получить код'}
+            {loading ? 'Отправка...' : 'Получить код'}
           </button>
         </>
       ) : (
@@ -118,7 +112,6 @@ const EmailScreen: React.FC<EmailScreenProps> = ({ onContinue, onOpenTerms }) =>
             placeholder="Код из письма"
             value={code}
             onChange={e => setCode(e.target.value)}
-            disabled={loading}
           />
 
           <button
@@ -126,12 +119,12 @@ const EmailScreen: React.FC<EmailScreenProps> = ({ onContinue, onOpenTerms }) =>
             onClick={verifyCode}
             disabled={loading}
           >
-            {loading ? 'Проверка…' : 'Продолжить'}
+            Продолжить
           </button>
         </>
       )}
 
-      {error && <p style={{ color: '#ef4444', marginTop: 16 }}>{error}</p>}
+      {error && <p style={{ color: '#ef4444' }}>{error}</p>}
 
       <Disclaimer onOpenTerms={onOpenTerms} />
     </div>
