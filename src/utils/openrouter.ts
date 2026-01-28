@@ -13,7 +13,7 @@ export async function fetchOpenRouterReply(messages: ORMessage[]) {
       'X-Title': 'HoldPoint MVP',
     },
     body: JSON.stringify({
-      model: 'mistralai/devstral-2512:free',
+      model: 'tngtech/tng-r1t-chimera:free',
       messages: [
         {
           role: 'system',
