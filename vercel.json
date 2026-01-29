@@ -1,0 +1,15 @@
+{
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "holdpoint-pwa.vercel.app"
+        }
+      ],
+      "destination": "https://hold-point.ru/$1",
+      "permanent": true
+    }
+  ]
+}
