@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Splash } from './components/Splash';
 
 import Landing from './screens/Landing';
 import EmailScreen from './screens/EmailScreen';
@@ -20,6 +21,10 @@ type Screen =
   | 'terms';
 
 const App: React.FC = () => {
+  /** SPLASH */
+  const [loading, setLoading] = useState(true);
+
+  /** АВТОРИЗАЦИЯ */
   const isLoggedIn = Boolean(localStorage.getItem('holdpoint_user'));
 
   const [screen, setScreen] = useState<Screen>(
@@ -28,6 +33,13 @@ const App: React.FC = () => {
 
   const [prevScreen, setPrevScreen] = useState<Screen | null>(null);
 
+  /** SPLASH TIMER */
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 800);
+    return () => clearTimeout(timer);
+  }, []);
+
+  /** ПРОВЕРКА ПОЛЬЗОВАТЕЛЯ */
   useEffect(() => {
     const user = localStorage.getItem('holdpoint_user');
     if (user) {
@@ -40,16 +52,25 @@ const App: React.FC = () => {
     setScreen('terms');
   };
 
+  /** ПОКАЗ SPLASH */
+  if (loading) {
+    return <Splash />;
+  }
+
   return (
     <>
       {screen === 'landing' && (
-        <Landing onStart={() => setScreen('email')}
-        onOpenTerms={openTerms} />
+        <Landing
+          onStart={() => setScreen('email')}
+          onOpenTerms={openTerms}
+        />
       )}
 
       {screen === 'email' && (
-        <EmailScreen onContinue={() => setScreen('chat-free')}
-        onOpenTerms={openTerms} />
+        <EmailScreen
+          onContinue={() => setScreen('chat-free')}
+          onOpenTerms={openTerms}
+        />
       )}
 
       {screen === 'chat-free' && (
@@ -78,16 +99,14 @@ const App: React.FC = () => {
       )}
 
       {screen === 'tariff' && (
-        <TariffScreen onStartUnlimited={() => console.log('Начать безлимит')} />
+        <TariffScreen
+          onStartUnlimited={() => setScreen('limit')}
+        />
       )}
 
       {screen === 'terms' && prevScreen && (
         <TermsScreen onAccept={() => setScreen(prevScreen)} />
       )}
-
-      {screen === 'tariff' && (
-  <TariffScreen onStartUnlimited={() => setScreen('limit')} />
-)}
     </>
   );
 };
