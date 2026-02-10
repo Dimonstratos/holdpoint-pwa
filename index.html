@@ -5,9 +5,21 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>holdpoint-pwa</title>
+
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6YBZ8DX2CZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-6YBZ8DX2CZ'); // <- замените на ваш Measurement ID
+    </script>
   </head>
   <body>
     <div id="root"></div>
+
+    <!-- Ваш основной скрипт -->
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
