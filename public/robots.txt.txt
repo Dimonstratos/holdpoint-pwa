@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://hold-point.ru/sitemap.xml
